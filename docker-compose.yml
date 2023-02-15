@@ -1,0 +1,23 @@
+version: '3.1'
+networks:
+  my_network:
+    driver: bridge
+services:
+  PostgreSQL:
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sh:/docker-entrypoint-initdb.d/init-database.sh
+
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - my_network
